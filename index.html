@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Video Downloader</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1e1b4b;
+        }
+        p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus {
+            border-color: #4f46e5;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #4338ca;
+        }
+        .loading {
+            display: none;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .result-box {
+            display: none;
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 12px 24px;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .download-btn:hover {
+            background: #059669;
+        }
+        .error {
+            color: #ef4444;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Insta & FB Downloader</h1>
+        <p>Instagram Reels/Videos aur Facebook Videos bina login ke download karein</p>
+        
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Paste Instagram or Facebook link here...">
+        </div>
+        
+        <button onclick="downloadVideo()">Fetch Download Link</button>
+        
+        <div class="loading" id="loadingText">Processing... Please wait...</div>
+        <div class="error" id="errorText">Kuch galat hua! Kripya sahi link check karein.</div>
+        
+        <div class="result-box" id="resultBox">
+            <p style="color: #10b981; font-weight: bold;">Video Link Fetched Successfully!</p>
+            <a href="#" id="downloadLink" target="_blank" class="download-btn">Click here to Download / Watch</a>
+        </div>
+    </div>
+
+    <script>
+        async function downloadVideo() {
+            const urlInput = document.getElementById('videoUrl').value.trim();
+            const loadingText = document.getElementById('loadingText');
+            const errorText = document.getElementById('errorText');
+            const resultBox = document.getElementById('resultBox');
+            const downloadLink = document.getElementById('downloadLink');
+
+            // Resetting elements
+            loadingText.style.display = 'none';
+            errorText.style.display = 'none';
+            resultBox.style.display = 'none';
+
+            if (!urlInput) {
+                alert('Please paste a valid URL first!');
+                return;
+            }
+
+            loadingText.style.display = 'block';
+
+            try {
+                // Free public social media downloader API use kar rahe hain
+                const apiUrl = `https://api.vyturex.com/socialmedia?url=${encodeURIComponent(urlInput)}`;
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data && data.video_url) {
+                    loadingText.style.display = 'none';
+                    resultBox.style.display = 'block';
+                    downloadLink.href = data.video_url;
+                } else if (data && data.url) { // Back up for alternative API format
+                    loadingText.style.display = 'none';
+                    resultBox.style.display = 'block';
+                    downloadLink.href = data.url;
+                } else {
+                    throw new Error('Link not found');
+                }
+            } catch (error) {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'block';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
+
