@@ -1,176 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Video Downloader</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #4f46e5, #06b6d4);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #1e1b4b;
-        }
-        p {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 25px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-        input:focus {
-            border-color: #4f46e5;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #4f46e5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover {
-            background: #4338ca;
-        }
-        .loading {
-            display: none;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #4f46e5;
-        }
-        .result-box {
-            display: none;
-            margin-top: 25px;
-            padding: 15px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        .download-btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 12px 24px;
-            background: #10b981;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .download-btn:hover {
-            background: #059669;
-        }
-        .error {
-            color: #ef4444;
-            margin-top: 15px;
-            font-size: 14px;
-            display: none;
-        }
-    </style>
+    <title>Insta & FB Downloader</title>
+    <!-- Tailwind CSS Styling ke liye -->
+    <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
 </head>
-<body>
+<body class="bg-gradient-to-tr from-blue-600 to-indigo-900 min-h-screen flex items-center justify-center p-4">
 
-    <div class="container">
-        <h1>Insta & FB Downloader</h1>
-        <p>Instagram Reels/Videos aur Facebook Videos bina login ke download karein</p>
-        
-        <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="Paste Instagram or Facebook link here...">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full text-center">
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-2 flex items-center justify-center gap-2">
+            <i class="fab fa-instagram text-pink-600"></i> Insta & FB Downloader
+        </h1>
+        <p class="text-slate-500 text-sm mb-6">Instagram Reels/Videos aur Facebook Videos bina login ke download karein</p>
+
+        <!-- Input Box -->
+        <div class="relative mb-4">
+            <input type="text" id="videoUrl" placeholder="https://www.instagram.com/reel/..." 
+                class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 text-sm pr-10">
+            <i class="fas fa-link absolute right-3 top-3.5 text-slate-400"></i>
         </div>
-        
-        <button onclick="downloadVideo()">Fetch Download Link</button>
-        
-        <div class="loading" id="loadingText">Processing... Please wait...</div>
-        <div class="error" id="errorText">Kuch galat hua! Kripya sahi link check karein.</div>
-        
-        <div class="result-box" id="resultBox">
-            <p style="color: #10b981; font-weight: bold;">Video Link Fetched Successfully!</p>
-            <a href="#" id="downloadLink" target="_blank" class="download-btn">Click here to Download / Watch</a>
+
+        <!-- Submit Button -->
+        <button id="fetchBtn" onclick="processDownload()" 
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-lg shadow-indigo-200">
+            <span id="btnText">Fetch Download Link</span>
+            <i id="btnIcon" class="fas fa-arrow-right"></i>
+        </button>
+
+        <!-- Message Status Area -->
+        <div id="statusMessage" class="mt-4 text-sm font-semibold hidden"></div>
+
+        <!-- Dynamic Download Button Slot -->
+        <div id="downloadContainer" class="mt-4 hidden">
+            <a id="finalDownloadBtn" href="#" target="_blank" rel="noopener noreferrer"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-md">
+                <i class="fas fa-download"></i> Download Video Now
+            </a>
         </div>
     </div>
 
-    <script>
-        async function downloadVideo() {
-            const urlInput = document.getElementById('videoUrl').value.trim();
-            const loadingText = document.getElementById('loadingText');
-            const errorText = document.getElementById('errorText');
-            const resultBox = document.getElementById('resultBox');
-            const downloadLink = document.getElementById('downloadLink');
-
-            // Resetting elements
-            loadingText.style.display = 'none';
-            errorText.style.display = 'none';
-            resultBox.style.display = 'none';
-
-            if (!urlInput) {
-                alert('Please paste a valid URL first!');
-                return;
-            }
-
-            loadingText.style.display = 'block';
-
-            try {
-                // Free public social media downloader API use kar rahe hain
-                const apiUrl = `https://api.vyturex.com/socialmedia?url=${encodeURIComponent(urlInput)}`;
-                
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data && data.video_url) {
-                    loadingText.style.display = 'none';
-                    resultBox.style.display = 'block';
-                    downloadLink.href = data.video_url;
-                } else if (data && data.url) { // Back up for alternative API format
-                    loadingText.style.display = 'none';
-                    resultBox.style.display = 'block';
-                    downloadLink.href = data.url;
-                } else {
-                    throw new Error('Link not found');
-                }
-            } catch (error) {
-                loadingText.style.display = 'none';
-                errorText.style.display = 'block';
-                console.error(error);
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
+async function processDownload() {
+    const inputUrl = document.getElementById("videoUrl").value.trim();
+    const fetchBtn = document.getElementById("fetchBtn");
+    const btnText = document.getElementById("btnText");
+    const btnIcon = document.getElementById("btnIcon");
+    const statusMessage = document.getElementById("statusMessage");
+    const downloadContainer = document.getElementById("downloadContainer");
+    const finalDownloadBtn = document.getElementById("finalDownloadBtn");
 
+    // Reset layout elements
+    statusMessage.classList.add("hidden");
+    downloadContainer.classList.add("hidden");
+
+    if (!inputUrl) {
+        showStatus("Kripya ek valid video URL paste karein!", "text-red-500");
+        return;
+    }
+
+    // UI Loading state update
+    fetchBtn.disabled = true;
+    btnText.innerText = "Fetching Video Links...";
+    btnIcon.className = "fas fa-spinner fa-spin";
+
+    try {
+        // Pubic CORS-Bypass API for downloading Instagram content
+        const targetApi = `https://allorigins.win{encodeURIComponent('https://ddinstagram.com' + inputUrl.split('instagram.com/')[1])}`;
+        
+        const response = await fetch(targetApi);
+        if (!response.ok) throw new Error("Network response error.");
+        
+        const rawData = await response.json();
+        
+        // Agar dynamic redirect match ho jata hai
+        if (rawData && rawData.contents) {
+            // Instagram wrapper redirect process check
+            const directVideoUrl = 'https://ddinstagram.com' + inputUrl.split('instagram.com/')[1];
+            
+            showStatus("Link mil gaya! Niche click karke download karein.", "text-green-600");
+            
+            // Setup download interface buttons
+            finalDownloadBtn.href = directVideoUrl;
+            downloadContainer.classList.remove("hidden");
+        } else {
+            showStatus("Kuch galat hua! Kripya sahi link check karein.", "text-red-500");
+        }
+
+    } catch (error) {
+        console.error("Downloader Error:", error);
+        // Fallback option in case proxy limits hit
+        showStatus("Error! Agar link kaam na kare toh SaveFrom.net try karein.", "text-amber-600");
+        
+        // Backup link redirection direct implementation
+        finalDownloadBtn.href = `https://savefrom.net{encodeURIComponent(inputUrl)}`;
+        downloadContainer.classList.remove("hidden");
+    } finally {
+        // Restore button interactive state
+        fetchBtn.disabled = false;
+        btnText.innerText = "Fetch Download Link";
+        btnIcon.className = "fas fa-arrow-right";
+    }
+}
+
+function showStatus(text, textColorClass) {
+    const statusMessage = document.getElementById("statusMessage");
+    statusMessage.innerText = text;
+    statusMessage.className = `mt-4 text-sm font-semibold ${textColorClass}`;
+    statusMessage.classList.remove("hidden");
+}
