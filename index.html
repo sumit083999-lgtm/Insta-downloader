@@ -1,115 +1,528 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insta & FB Downloader</title>
-    <!-- Tailwind CSS Styling ke liye -->
-    <script src="https://tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cloudflare.com">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insta & FB Video Downloader</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --card: #13131a;
+    --border: #2a2a3a;
+    --accent: #e040fb;
+    --accent2: #7c4dff;
+    --text: #f0f0ff;
+    --muted: #888;
+    --success: #00e676;
+    --error: #ff5252;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 60px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* animated background blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+  }
+  .blob1 { width: 320px; height: 320px; background: var(--accent); top: -80px; left: -80px; animation-delay: 0s; }
+  .blob2 { width: 260px; height: 260px; background: var(--accent2); bottom: 60px; right: -60px; animation-delay: 3s; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+    margin-top: 20px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 8vw, 44px);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .tagline {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: #1e1e2e;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 21px;
+    background: linear-gradient(135deg, rgba(224,64,251,0.3), rgba(124,77,255,0.3));
+    z-index: -1;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    background: #0a0a0f;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 48px 14px 16px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: #444; }
+
+  .clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: none;
+    padding: 4px;
+  }
+  .clear-btn.visible { display: block; }
+
+  .platform-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, rgba(224,64,251,0.15), rgba(124,77,255,0.15));
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .tab svg { width: 16px; height: 16px; }
+
+  .btn-main {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-main:active { transform: scale(0.98); }
+  .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading .spinner { display: block; }
+  .loading .btn-text { display: none; }
+
+  /* Status */
+  .status {
+    margin-top: 16px;
+    font-size: 13px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    display: none;
+  }
+  .status.error { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: var(--error); display: block; }
+  .status.info { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); display: block; }
+
+  /* Result */
+  .result {
+    margin-top: 20px;
+    display: none;
+  }
+  .result.visible { display: block; }
+
+  .result-card {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .result-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dl-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .dl-option:last-child { border-bottom: none; }
+
+  .dl-info { flex: 1; }
+  .dl-quality {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .dl-size {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .dl-btn {
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+  }
+  .dl-btn:hover { opacity: 0.85; }
+
+  /* How to use */
+  .how-to {
+    width: 100%;
+    max-width: 460px;
+    margin-top: 24px;
+  }
+
+  .how-to h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #13131a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+
+  .step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .step-text strong { color: var(--text); }
+
+  footer {
+    margin-top: 36px;
+    font-size: 11px;
+    color: #333;
+    text-align: center;
+  }
+</style>
 </head>
-<body class="bg-gradient-to-tr from-blue-600 to-indigo-900 min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full text-center">
-        <h1 class="text-3xl font-extrabold text-slate-800 mb-2 flex items-center justify-center gap-2">
-            <i class="fab fa-instagram text-pink-600"></i> Insta & FB Downloader
-        </h1>
-        <p class="text-slate-500 text-sm mb-6">Instagram Reels/Videos aur Facebook Videos bina login ke download karein</p>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
 
-        <!-- Input Box -->
-        <div class="relative mb-4">
-            <input type="text" id="videoUrl" placeholder="https://www.instagram.com/reel/..." 
-                class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 text-sm pr-10">
-            <i class="fas fa-link absolute right-3 top-3.5 text-slate-400"></i>
-        </div>
+<header>
+  <div class="logo">⬇ VidGrab</div>
+  <p class="tagline">Instagram & Facebook Video Downloader</p>
+  <div class="badges">
+    <span class="badge">🚫 No Login</span>
+    <span class="badge">📱 Mobile Ready</span>
+    <span class="badge">⚡ Fast</span>
+    <span class="badge">🆓 Free</span>
+  </div>
+</header>
 
-        <!-- Submit Button -->
-        <button id="fetchBtn" onclick="processDownload()" 
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-lg shadow-indigo-200">
-            <span id="btnText">Fetch Download Link</span>
-            <i id="btnIcon" class="fas fa-arrow-right"></i>
-        </button>
+<div class="card">
+  <!-- Platform Tabs -->
+  <div class="platform-tabs">
+    <button class="tab active" onclick="setTab('instagram')" id="tab-instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      Instagram
+    </button>
+    <button class="tab" onclick="setTab('facebook')" id="tab-facebook">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook
+    </button>
+  </div>
 
-        <!-- Message Status Area -->
-        <div id="statusMessage" class="mt-4 text-sm font-semibold hidden"></div>
+  <label>Video URL Paste Karo</label>
+  <div class="input-wrap">
+    <input type="text" id="urlInput" placeholder="https://www.instagram.com/reel/..." oninput="onInput()">
+    <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
+  </div>
 
-        <!-- Dynamic Download Button Slot -->
-        <div id="downloadContainer" class="mt-4 hidden">
-            <a id="finalDownloadBtn" href="#" target="_blank" rel="noopener noreferrer"
-                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center gap-2 shadow-md">
-                <i class="fas fa-download"></i> Download Video Now
-            </a>
-        </div>
+  <button class="btn-main" id="fetchBtn" onclick="fetchVideo()">
+    <span class="spinner" id="spinner"></span>
+    <span class="btn-text">⬇ Download Link Lao</span>
+  </button>
+
+  <div class="status" id="status"></div>
+
+  <div class="result" id="result">
+    <div class="result-card">
+      <div class="result-header">
+        ✅ Video Mil Gayi! Download Karo
+      </div>
+      <div id="downloadOptions"></div>
     </div>
+  </div>
+</div>
 
-    <script src="script.js"></script>
+<div class="how-to">
+  <h3>📖 Kaise Use Karein</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Instagram/Facebook</strong> pe jao, video open karo, Share button dabaao aur <strong>"Link Copy Karo"</strong> select karo</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Upar wale box mein <strong>link paste karo</strong> aur platform select karo (Instagram ya Facebook)</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>"Download Link Lao"</strong> button dabaao — link aa jayega, usse download karo</div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 VidGrab · Personal use only · Respect content creator rights</footer>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────────
+  const BACKEND_URL = 'https://video-backend-rmc9.onrender.com';
+  // ──────────────────────────────────────────────────────────
+
+  let currentTab = 'instagram';
+
+  function setTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    const inp = document.getElementById('urlInput');
+    inp.placeholder = tab === 'instagram'
+      ? 'https://www.instagram.com/reel/...'
+      : 'https://www.facebook.com/reel/...';
+    clearResult();
+  }
+
+  function onInput() {
+    const v = document.getElementById('urlInput').value;
+    document.getElementById('clearBtn').classList.toggle('visible', v.length > 0);
+    clearResult();
+  }
+
+  function clearInput() {
+    document.getElementById('urlInput').value = '';
+    document.getElementById('clearBtn').classList.remove('visible');
+    clearResult();
+  }
+
+  function clearResult() {
+    document.getElementById('result').classList.remove('visible');
+    document.getElementById('status').className = 'status';
+    document.getElementById('status').textContent = '';
+  }
+
+  function setStatus(msg, type) {
+    const s = document.getElementById('status');
+    s.className = 'status ' + type;
+    s.textContent = msg;
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('fetchBtn');
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+  }
+
+  async function fetchVideo() {
+    const url = document.getElementById('urlInput').value.trim();
+    clearResult();
+    if (!url) { setStatus('⚠️ Pehle URL paste karo!', 'error'); return; }
+    const isInsta = url.includes('instagram.com');
+    const isFb = url.includes('facebook.com') || url.includes('fb.watch');
+    if (!isInsta && !isFb) {
+      setStatus('❌ Sirf Instagram ya Facebook ka link daalo.', 'error');
+      return;
+    }
+    setLoading(true);
+    setStatus('⏳ Video dhundh raha hoon... (pehli baar 30-50 sec lag sakte hain)', 'info');
+    try {
+      const res = await fetch(`${BACKEND_URL}/download?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      setLoading(false);
+      if (data.links && data.links.length > 0) {
+        showResult(data.links);
+        document.getElementById('status').className = 'status';
+      } else {
+        setStatus('❌ Video nahi mili. Public link daalo — private post kaam nahi karega.', 'error');
+      }
+    } catch (e) {
+      setLoading(false);
+      setStatus('❌ Error: ' + (e.message || 'Server se connect nahi hua. Dobara try karo.'), 'error');
+    }
+  }
+
+  // ── Show real results ───────────────────────────────────
+  function showResult(links) {
+    const container = document.getElementById('downloadOptions');
+    container.innerHTML = '';
+
+    links.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'dl-option';
+      div.innerHTML = `
+        <div class="dl-info">
+          <div class="dl-quality">${item.ext === 'jpg' ? '🖼️' : '🎬'} ${item.quality}</div>
+          <div class="dl-size">${item.ext.toUpperCase()} file</div>
+        </div>
+        <a class="dl-btn" href="${item.url}" target="_blank" download>
+          ⬇ Download
+        </a>
+      `;
+      container.appendChild(div);
+    });
+
+    document.getElementById('result').classList.add('visible');
+  }
+
+
+</script>
 </body>
 </html>
-async function processDownload() {
-    const inputUrl = document.getElementById("videoUrl").value.trim();
-    const fetchBtn = document.getElementById("fetchBtn");
-    const btnText = document.getElementById("btnText");
-    const btnIcon = document.getElementById("btnIcon");
-    const statusMessage = document.getElementById("statusMessage");
-    const downloadContainer = document.getElementById("downloadContainer");
-    const finalDownloadBtn = document.getElementById("finalDownloadBtn");
-
-    // Reset layout elements
-    statusMessage.classList.add("hidden");
-    downloadContainer.classList.add("hidden");
-
-    if (!inputUrl) {
-        showStatus("Kripya ek valid video URL paste karein!", "text-red-500");
-        return;
-    }
-
-    // UI Loading state update
-    fetchBtn.disabled = true;
-    btnText.innerText = "Fetching Video Links...";
-    btnIcon.className = "fas fa-spinner fa-spin";
-
-    try {
-        // Pubic CORS-Bypass API for downloading Instagram content
-        const targetApi = `https://allorigins.win{encodeURIComponent('https://ddinstagram.com' + inputUrl.split('instagram.com/')[1])}`;
-        
-        const response = await fetch(targetApi);
-        if (!response.ok) throw new Error("Network response error.");
-        
-        const rawData = await response.json();
-        
-        // Agar dynamic redirect match ho jata hai
-        if (rawData && rawData.contents) {
-            // Instagram wrapper redirect process check
-            const directVideoUrl = 'https://ddinstagram.com' + inputUrl.split('instagram.com/')[1];
-            
-            showStatus("Link mil gaya! Niche click karke download karein.", "text-green-600");
-            
-            // Setup download interface buttons
-            finalDownloadBtn.href = directVideoUrl;
-            downloadContainer.classList.remove("hidden");
-        } else {
-            showStatus("Kuch galat hua! Kripya sahi link check karein.", "text-red-500");
-        }
-
-    } catch (error) {
-        console.error("Downloader Error:", error);
-        // Fallback option in case proxy limits hit
-        showStatus("Error! Agar link kaam na kare toh SaveFrom.net try karein.", "text-amber-600");
-        
-        // Backup link redirection direct implementation
-        finalDownloadBtn.href = `https://savefrom.net{encodeURIComponent(inputUrl)}`;
-        downloadContainer.classList.remove("hidden");
-    } finally {
-        // Restore button interactive state
-        fetchBtn.disabled = false;
-        btnText.innerText = "Fetch Download Link";
-        btnIcon.className = "fas fa-arrow-right";
-    }
-}
-
-function showStatus(text, textColorClass) {
-    const statusMessage = document.getElementById("statusMessage");
-    statusMessage.innerText = text;
-    statusMessage.className = `mt-4 text-sm font-semibold ${textColorClass}`;
-    statusMessage.classList.remove("hidden");
-}
