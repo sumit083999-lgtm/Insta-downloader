@@ -1126,132 +1126,136 @@
 
   function wakeUpServer() {
     // Ping backend to wake up Render free instance
-    return fetch(BACKEND + '/health', { method: 'GET', signal: AbortSignal.timeout(8000) })
-      .catch(() => {}); // ignore errors, just trying to wake
-  }
+    return fetch(BACKEND_URL + '/health', { method: 'GET', signal: AbortSignal.timeout(8000) })
+        .catch(() => {}); // Ignore errors, just trying to wake it
+}
 
-  async function startDownload() {
-    const url = document.getElementById('urlInput').value.trim();
+async function startDownload() {
+    const urlInputEl = document.getElementById('urlInput');
+    const targetUrl = urlInputEl ? urlInputEl.value.trim() : '';
 
-    if (!url) {
-      showError('⚠️ कृपया Instagram link paste करें।');
-      return;
+    if (!targetUrl) {
+        showError('⚠️ Kripya valid Instagram/Facebook link paste karein!');
+        return;
     }
 
-    if (!url.includes('instagram.com')) {
-      showError('⚠️ यह valid Instagram link नहीं है। instagram.com का link paste करें।');
-      return;
-    }
-
-    showLoading('Server connect हो रहा है... (पहली बार 15-20 sec लग सकते हैं)');
-
+    showLoading('Server connect ho raha hai... (Pehli baar 15-20 sec lag sakte hain)');
+    
     // Wake up Render free instance first
     await wakeUpServer();
 
-    showLoading('Media fetch हो रही है...');
+    showLoading('Media fetch ho rahi hai...');
 
     try {
-      const response = await fetch(BACKEND + '/download', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ url: url }),
-        signal: AbortSignal.timeout(60000) // 60s timeout for cold start
-      });
+        // ✅ CORRECT SINGLE POST REQUEST ENGINE
+        const response = await fetch(`${BACKEND_URL}/api/download`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                url: targetUrl,
+                type: typeof currentType !== 'undefined' ? currentType : 'reel'
+            }),
+            signal: AbortSignal.timeout(60000) // 60s timeout for cold start
+        });
 
-      if (!response.ok) {
-        let errMsg = `Server Error ${response.status}`;
-        try {
-          const errData = await response.json();
-          errMsg = errData.error || errData.message || errMsg;
-        } catch {}
-        throw new Error(errMsg);
-      }
+        if (!response.ok) {
+            throw new Error(`Server Error ${response.status}`);
+        }
 
-      const data = await response.json();
-      hideLoading();
-      showResult(data);
+        const data = await response.json();
+        hideLoading();
+        showResult(data);
 
     } catch (err) {
-      if (err.name === 'TimeoutError') {
-        showError('⏱️ Server response slow है। Page refresh करके 30 seconds बाद फिर try करें।');
-      } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-        showError('🌐 Network error। Internet connection check करें या थोड़ी देर बाद try करें।');
-      } else {
-        showError('❌ ' + err.message + '\n\nLink सही है? Page refresh करके try करें।');
-      }
+        hideLoading();
+        if (err.name === 'TimeoutError') {
+            showError('⚠️ Server response slow hai. Page refresh karke 30 seconds baad fir try karein.');
+        } else {
+            showError('❌ Server sleep mode mein ho sakta hai. Ek baar refresh karke dobara try karein.');
+        }
+        console.error(err);
     }
-  }
+}
 
-  function showResult(data) {
+function showResult(data) {
     const preview = document.getElementById('mediaPreview');
     const options = document.getElementById('dlOptions');
     const section = document.getElementById('resultSection');
 
-    preview.innerHTML = '';
-    options.innerHTML = '';
+    if (preview) preview.innerHTML = '';
+    if (options) options.innerHTML = '';
 
-    // Preview
-    if (data.thumbnail || data.poster) {
-      const img = document.createElement('img');
-      img.src = data.thumbnail || data.poster;
-      img.alt = 'Preview';
-      preview.appendChild(img);
+    // Handle Preview Layer (Image or Thumbnail)
+    if (data.thumbnail || data.poster || data.preview_img) {
+        const img = document.createElement('img');
+        img.src = data.thumbnail || data.poster || data.preview_img;
+        img.className = 'w-full h-auto rounded-xl max-h-64 object-contain';
+        img.alt = 'Preview';
+        if (preview) preview.appendChild(img);
     }
 
-    // Download options
-    const medias = data.medias || data.links || [];
+    const finalUrl = data.download_url || data.link || data.url;
+    let medias = data.medias || data.links || [];
 
-    if (medias.length === 0 && data.url) {
-      medias.push({ url: data.url, quality: 'HD', type: 'video' });
+    if (medias.length === 0 && finalUrl) {
+        medias.push({ url: finalUrl, quality: 'HD', type: 'video' });
     }
 
     if (medias.length === 0) {
-      showError('❌ Download link नहीं मिली। Post public है? Link सही है?');
-      return;
+        showError('❌ Download link nahi mila. Post public hai? Link sahi hai?');
+        return;
     }
 
-    medias.forEach((media, i) => {
-      const a = document.createElement('a');
-      a.className = 'dl-option-btn';
-      a.href = media.url || media.link;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.setAttribute('download', '');
+    // Creating neat premium buttons dynamically
+    medias.forEach((media) => {
+        const a = document.createElement('a');
+        a.className = 'dl-option-btn w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md flex justify-between items-center transition-all duration-200 cursor-pointer text-decoration-none my-2';
+        a.href = media.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('download', '');
 
-      const isVideo = (media.type || '').includes('video') || (media.url || '').includes('.mp4');
-      const icon = isVideo ? '🎬' : '🖼️';
-      const label = media.quality || media.resolution || (isVideo ? 'HD Video' : 'Photo');
+        const isVideo = (media.type || '').includes('video') || (media.url || '').includes('.mp4');
+        const icon = isVideo ? '🎬' : '📸';
+        const label = media.quality || media.resolution || (isVideo ? 'HD Video' : 'Photo');
 
-      a.innerHTML = `
-        <div>
-          <div class="dl-label">${icon} ${label} Download</div>
-          <div class="dl-meta">${isVideo ? 'MP4 Video' : 'JPG Image'} • Tap to save</div>
-        </div>
-        <div class="dl-icon">⬇️</div>
-      `;
+        a.innerHTML = `
+            <div style="text-align: left;">
+                <div class="dl-label" style="font-weight:700; font-size:13px; color:#fff;">${icon} ${label} Download</div>
+                <div class="dl-meta" style="font-size:11px; opacity:0.8; color:#ddd;">${isVideo ? 'MP4 Video' : 'JPG Image'} • Tap to save</div>
+            </div>
+            <div class="dl-icon" style="font-size:14px; color:#fff;"><i class="fa-solid fa-arrow-down"></i></div>
+        `;
 
-      options.appendChild(a);
+        if (options) options.appendChild(a);
     });
 
-    section.style.display = 'block';
-    section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
+    if (section) {
+        section.style.display = 'block';
+        section.classList.remove('hidden');
+        section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
 
-  // FAQ toggle
-  function toggleFaq(el) {
-    el.closest('.faq-item').classList.toggle('open');
-  }
+function toggleFaq(el) {
+    if(el && el.closest('.faq-item')) {
+        el.closest('.faq-item').classList.toggle('open');
+    }
+}
 
-  // Enter key support
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('urlInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') startDownload();
-    });
-  });
-</script>
-
-</body>
-</html>
+// Global Event Listeners setup
+document.addEventListener('DOMContentLoaded', () => {
+    const inputEl = document.getElementById('urlInput');
+    if (inputEl) {
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                startDownload();
+            }
+        });
+    }
+});
+  
+                
