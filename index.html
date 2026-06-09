@@ -1,534 +1,1218 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insta & FB Video Downloader</title>
- <meta name="google-site-verification" content="LdLDDPX8sEgyKbml-Nk_L9BXOZhwh0SjoFcXrQMhVRE" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
- <script src="https://valuedcowboysample.com/13/be/cc/13becc4b6aa5f76938e3ae49e7624f0f.js"></script>
- <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  :root {
-    --bg: #0a0a0f;
-    --card: #13131a;
-    --border: #2a2a3a;
-    --accent: #e040fb;
-    --accent2: #7c4dff;
-    --text: #f0f0ff;
-    --muted: #888;
-    --success: #00e676;
-    --error: #ff5252;
-  }
+<!-- ═══ SEO ═══ -->
+<title>Instagram Video Downloader - Reels, Photos, Stories Free में | InstafbDown</title>
+<meta name="description" content="InstafbDown से Instagram Reels, Videos, Photos और Stories मुफ्त में डाउनलोड करें। बिना Login, बिना Watermark, HD Quality में। सिर्फ Link Paste करो और Download करो।" />
+<meta name="keywords" content="instagram video downloader, instagram reels download kaise kare, instagram se video download, insta downloader hindi, instagram story download, free instagram downloader india" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://instafbdown.in/" />
+<meta property="og:title" content="Instagram Video Downloader Free HD | InstafbDown" />
+<meta property="og:description" content="Reels, Photos, Stories – बिना Login के Download करें। 100% Free, No Watermark." />
+<meta property="og:url" content="https://instafbdown.in/" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://instafbdown.in/og-image.png" />
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 16px 60px;
-    position: relative;
-    overflow-x: hidden;
-  }
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "InstafbDown",
+  "url": "https://instafbdown.in",
+  "description": "Instagram Reels, Photos, Videos और Stories मुफ्त में डाउनलोड करें",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+}
+</script>
 
-  /* animated background blobs */
-  .blob {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.18;
-    pointer-events: none;
-    animation: float 8s ease-in-out infinite;
-  }
-  .blob1 { width: 320px; height: 320px; background: var(--accent); top: -80px; left: -80px; animation-delay: 0s; }
-  .blob2 { width: 260px; height: 260px; background: var(--accent2); bottom: 60px; right: -60px; animation-delay: 3s; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+<!-- Fonts: Noto Sans Devanagari for Hindi, Inter for UI -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  header {
-    text-align: center;
-    margin-bottom: 32px;
-    margin-top: 20px;
-  }
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root {
+  --pink:   #E1306C;
+  --purple: #833AB4;
+  --orange: #F77737;
+  --grad:   linear-gradient(135deg, #833AB4 0%, #E1306C 55%, #F77737 100%);
 
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(28px, 8vw, 44px);
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.1;
-    margin-bottom: 10px;
-  }
+  --bg:     #0a0a0a;
+  --surface:#141414;
+  --card:   #1a1a1a;
+  --border: #272727;
+  --text:   #efefef;
+  --sub:    #a0a0a0;
+  --white:  #ffffff;
 
-  .tagline {
-    color: var(--muted);
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-  }
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
 
-  .badges {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 12px;
-    flex-wrap: wrap;
-  }
-  .badge {
-    background: #1e1e2e;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    font-weight: 500;
-  }
+  --font-hi: 'Noto Sans Devanagari', sans-serif;
+  --font-ui: 'Inter', sans-serif;
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px 20px;
-    width: 100%;
-    max-width: 460px;
-    position: relative;
-  }
+  /* bottom bar height so content doesn't hide under it */
+  --bar-h: 80px;
+}
 
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 21px;
-    background: linear-gradient(135deg, rgba(224,64,251,0.3), rgba(124,77,255,0.3));
-    z-index: -1;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-  }
+html { scroll-behavior: smooth; }
 
-  .input-wrap {
-    position: relative;
-    margin-bottom: 16px;
-  }
+body {
+  font-family: var(--font-hi);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.75;
+  padding-bottom: var(--bar-h);
+}
 
-  input[type="text"] {
-    width: 100%;
-    background: #0a0a0f;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 48px 14px 16px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input[type="text"]:focus { border-color: var(--accent); }
-  input[type="text"]::placeholder { color: #444; }
+/* headings use Inter for bold weight */
+h1, h2, h3 {
+  font-family: var(--font-ui);
+  line-height: 1.2;
+  font-weight: 800;
+}
 
-  .clear-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    display: none;
-    padding: 4px;
-  }
-  .clear-btn.visible { display: block; }
+img { display: block; max-width: 100%; }
+a   { color: var(--pink); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-  .platform-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 58px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
 
-  .tab {
-    flex: 1;
-    padding: 10px 8px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .tab.active {
-    background: linear-gradient(135deg, rgba(224,64,251,0.15), rgba(124,77,255,0.15));
-    border-color: var(--accent);
-    color: var(--text);
-  }
-  .tab svg { width: 16px; height: 16px; }
+.logo {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 1.35rem;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -.5px;
+}
 
-  .btn-main {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    border: none;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .btn-main:active { transform: scale(0.98); }
-  .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
+nav { display: flex; gap: 6px; }
+nav a {
+  color: var(--sub);
+  font-size: .82rem;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: background .15s, color .15s;
+}
+nav a:hover { background: var(--card); color: var(--white); text-decoration: none; }
 
-  /* Spinner */
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2.5px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading .spinner { display: block; }
-  .loading .btn-text { display: none; }
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero {
+  padding: 52px 24px 48px;
+  text-align: center;
+  background: var(--bg);
+  position: relative;
+}
 
-  /* Status */
-  .status {
-    margin-top: 16px;
-    font-size: 13px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    display: none;
-  }
-  .status.error { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: var(--error); display: block; }
-  .status.info { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); display: block; }
+/* gradient orbs */
+.hero::before, .hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: .18;
+}
+.hero::before {
+  width: 420px; height: 420px;
+  background: var(--purple);
+  top: -80px; left: -80px;
+}
+.hero::after {
+  width: 360px; height: 360px;
+  background: var(--pink);
+  bottom: -60px; right: -60px;
+}
 
-  /* Result */
-  .result {
-    margin-top: 20px;
-    display: none;
-  }
-  .result.visible { display: block; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(225,48,108,.12);
+  border: 1px solid rgba(225,48,108,.3);
+  color: var(--pink);
+  font-size: .78rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
 
-  .result-card {
-    background: #0d0d15;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-  }
+.hero h1 {
+  font-size: clamp(1.8rem, 5.5vw, 3rem);
+  color: var(--white);
+  margin-bottom: 14px;
+}
 
-  .result-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--success);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.hero h1 span {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .dl-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-  .dl-option:last-child { border-bottom: none; }
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--sub);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  font-family: var(--font-hi);
+  line-height: 1.8;
+}
 
-  .dl-info { flex: 1; }
-  .dl-quality {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
-  .dl-size {
-    font-size: 11px;
-    color: var(--muted);
-  }
+/* pills */
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+.pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--sub);
+  font-size: .8rem;
+  font-family: var(--font-ui);
+  padding: 5px 14px;
+  border-radius: 20px;
+}
 
-  .dl-btn {
-    padding: 9px 16px;
-    border-radius: 8px;
-    border: none;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: opacity 0.2s;
-  }
-  .dl-btn:hover { opacity: 0.85; }
+/* ══════════════════════════════════════════
+   RESULT AREA (above the sticky bar)
+══════════════════════════════════════════ */
+#result {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px 24px;
+}
 
-  /* How to use */
-  .how-to {
-    width: 100%;
-    max-width: 460px;
-    margin-top: 24px;
-  }
+.result-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  animation: fadeUp .3s ease;
+}
 
-  .how-to h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 14px;
-    text-align: center;
-  }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+.result-card img {
+  width: 96px; height: 96px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  background: var(--surface);
+}
 
-  .step {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: #13131a;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-  }
+.result-info { flex: 1; min-width: 180px; }
 
-  .step-num {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 800;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+.result-label {
+  font-size: .78rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: #4ade80;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 10px;
+}
 
-  .step-text {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .step-text strong { color: var(--text); }
+.dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--grad);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: .88rem;
+  padding: 9px 20px;
+  border-radius: 50px;
+  margin: 4px 6px 4px 0;
+  transition: opacity .2s, transform .1s;
+  text-decoration: none;
+}
+.dl-btn:hover { opacity: .88; transform: scale(1.02); text-decoration: none; }
 
-  footer {
-    margin-top: 36px;
-    font-size: 11px;
-    color: #333;
-    text-align: center;
-  }
+.status-box {
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  font-size: .95rem;
+  animation: fadeUp .25s ease;
+  font-family: var(--font-hi);
+  line-height: 1.7;
+}
+.status-error  { background: #1e0808; border: 1px solid #5a1010; color: #ff9090; }
+.status-loading{ background: var(--card); border: 1px solid var(--border); color: var(--sub); text-align:center; padding:24px; }
+
+/* spinner */
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--pink);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  margin: 0 auto 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════
+   STICKY BOTTOM INPUT BAR
+══════════════════════════════════════════ */
+.input-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  background: rgba(14,14,14,.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 12px;
+}
+
+.input-bar-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  padding: 0 16px;
+  gap: 8px;
+  transition: border-color .2s;
+}
+.input-wrap:focus-within {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(225,48,108,.15);
+}
+
+.input-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.input-wrap input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: .98rem;
+  font-family: var(--font-hi);
+  padding: 13px 0;
+  min-width: 0;
+}
+.input-wrap input::placeholder { color: var(--sub); }
+
+.clear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--sub);
+  font-size: 1rem;
+  padding: 4px;
+  display: none;
+  line-height: 1;
+}
+.clear-btn.visible { display: block; }
+
+.dl-main-btn {
+  background: var(--grad);
+  border: none;
+  border-radius: 50px;
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: .95rem;
+  padding: 13px 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .2s, transform .1s;
+  flex-shrink: 0;
+}
+.dl-main-btn:hover   { opacity: .88; }
+.dl-main-btn:active  { transform: scale(.97); }
+.dl-main-btn:disabled{ opacity: .5; cursor: not-allowed; }
+
+/* ══════════════════════════════════════════
+   AD SLOTS
+══════════════════════════════════════════ */
+.ad-slot {
+  max-width: 740px;
+  margin: 16px auto;
+  padding: 0 20px;
+}
+.ad-inner {
+  border: 1px dashed var(--border);
+  border-radius: var(--r-sm);
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--border);
+  font-size: .72rem;
+  font-family: var(--font-ui);
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+.ad-inner.tall { min-height: 260px; }
+
+/* ══════════════════════════════════════════
+   CONTENT SECTIONS
+══════════════════════════════════════════ */
+.section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 56px 24px;
+}
+
+.sec-eyebrow {
+  font-family: var(--font-ui);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.sec-title {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.sec-sub {
+  color: var(--sub);
+  font-size: .97rem;
+  margin-bottom: 36px;
+  font-family: var(--font-hi);
+  max-width: 520px;
+}
+
+/* divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ── FEATURES ── */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.feat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 24px 20px;
+  transition: border-color .2s, transform .2s;
+}
+.feat-card:hover { border-color: var(--pink); transform: translateY(-3px); }
+
+.feat-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  background: var(--grad);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+
+.feat-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.feat-card p {
+  font-size: .9rem;
+  color: var(--sub);
+  font-family: var(--font-hi);
+  line-height: 1.7;
+}
+
+/* ── HOW TO ── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.step-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 24px 20px;
+  position: relative;
+}
+
+.step-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--grad);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  color: var(--white);
+  font-size: 1rem;
+  margin-bottom: 14px;
+}
+
+.step-card h3 {
+  font-size: .98rem;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.step-card p {
+  font-size: .88rem;
+  color: var(--sub);
+  font-family: var(--font-hi);
+  line-height: 1.75;
+}
+
+.tip-box {
+  margin-top: 20px;
+  background: rgba(131,58,180,.08);
+  border: 1px solid rgba(131,58,180,.25);
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  font-size: .9rem;
+  color: var(--sub);
+  font-family: var(--font-hi);
+  line-height: 1.75;
+}
+.tip-box strong { color: var(--text); }
+
+/* ── COMPARISON TABLE ── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+}
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 13px 18px;
+  font-size: .9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-ui);
+}
+th {
+  background: #1c1c1c;
+  font-weight: 700;
+  color: var(--white);
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: #111; }
+td:first-child { color: var(--text); font-weight: 500; font-family: var(--font-hi); font-size:.9rem; }
+.us td:first-child { color: var(--pink); }
+.yes { color: #4ade80; }
+.no  { color: #f87171; }
+.maybe { color: #facc15; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 10px; }
+
+details {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+details[open] { border-color: rgba(225,48,108,.45); }
+
+summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  font-size: .98rem;
+  color: var(--white);
+  font-family: var(--font-hi);
+  user-select: none;
+}
+summary::-webkit-details-marker { display: none; }
+
+.faq-ic {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem;
+  color: var(--sub);
+  transition: transform .25s, background .2s;
+}
+details[open] .faq-ic {
+  transform: rotate(180deg);
+  background: var(--grad);
+  border-color: transparent;
+  color: #fff;
+}
+
+.faq-ans {
+  padding: 4px 20px 20px;
+  color: var(--sub);
+  font-size: .95rem;
+  font-family: var(--font-hi);
+  line-height: 1.8;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+}
+
+/* ── SEO CONTENT ── */
+.seo-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 36px 32px;
+}
+.seo-block h2 {
+  font-size: 1.15rem;
+  color: var(--white);
+  margin: 28px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.seo-block h2:first-child { margin-top: 0; }
+.seo-block p {
+  color: var(--sub);
+  font-size: .94rem;
+  font-family: var(--font-hi);
+  line-height: 1.85;
+  margin-bottom: 6px;
+}
+.seo-block ul {
+  color: var(--sub);
+  font-size: .94rem;
+  font-family: var(--font-hi);
+  line-height: 1.85;
+  padding-left: 20px;
+}
+.seo-block li { margin-bottom: 4px; }
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 36px 24px;
+  text-align: center;
+  color: var(--sub);
+  font-size: .85rem;
+  font-family: var(--font-hi);
+}
+.footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 6px; margin-bottom: 16px; }
+.footer-links a {
+  color: var(--sub);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: .82rem;
+  font-family: var(--font-ui);
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--white); text-decoration: none; }
+footer p { line-height: 1.9; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 520px) {
+  .hero { padding: 40px 18px 36px; }
+  .section { padding: 44px 18px; }
+  nav { display: none; }
+  .dl-main-btn { padding: 13px 16px; font-size: .88rem; }
+  .seo-block { padding: 24px 18px; }
+}
+
+/* focus ring for accessibility */
+:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
 </style>
 </head>
 <body>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
 <header>
-  <div class="logo">⬇ VidGrab</div>
-  <p class="tagline">Instagram & Facebook Video Downloader</p>
-  <div class="badges">
-    <span class="badge">🚫 No Login</span>
-    <span class="badge">📱 Mobile Ready</span>
-    <span class="badge">⚡ Fast</span>
-    <span class="badge">🆓 Free</span>
-  </div>
+  <div class="logo">InstafbDown</div>
+  <nav>
+    <a href="#how-to">कैसे करें?</a>
+    <a href="#compare">Comparison</a>
+    <a href="#faq">FAQ</a>
+  </nav>
 </header>
 
-<div class="card">
-  <!-- Platform Tabs -->
-  <div class="platform-tabs">
-    <button class="tab active" onclick="setTab('instagram')" id="tab-instagram">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-      Instagram
-    </button>
-    <button class="tab" onclick="setTab('facebook')" id="tab-facebook">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      Facebook
-    </button>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-badge">⚡ 100% Free &amp; Fast</div>
+
+  <h1>Instagram का कोई भी<br><span>Content Download करो</span></h1>
+
+  <p class="hero-desc">
+    Reels, Photos, Stories और Videos — सिर्फ Link Paste करो।<br>
+    No Login · No Watermark · HD Quality
+  </p>
+
+  <div class="hero-pills">
+    <span class="pill">📹 Reels</span>
+    <span class="pill">🖼 Photos</span>
+    <span class="pill">📖 Stories</span>
+    <span class="pill">🎞 Carousel</span>
+    <span class="pill">📲 Mobile Ready</span>
   </div>
+</section>
 
-  <label>Video URL Paste Karo</label>
-  <div class="input-wrap">
-    <input type="text" id="urlInput" placeholder="https://www.instagram.com/reel/..." oninput="onInput()">
-    <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
-  </div>
+<!-- result appears here -->
+<div id="result"></div>
 
-  <button class="btn-main" id="fetchBtn" onclick="fetchVideo()">
-    <span class="spinner" id="spinner"></span>
-    <span class="btn-text">⬇ Download Link Lao</span>
-  </button>
- <!-- Native Banner Ad Code -->
-<script async="async" data-cfasync="false" src="https://valuedcowboysample.com/4b31a449041137a339d7647cf3307edc/invoke.js"></script>
-<div id="container-4b31a449041137a339d7647cf3307edc"></div>
- 
-
-  <div class="status" id="status"></div>
-
-  <div class="result" id="result">
-    <div class="result-card">
-      <div class="result-header">
-        ✅ Video Mil Gayi! Download Karo
-      </div>
-      <div id="downloadOptions"></div>
-    </div>
+<!-- ══════════════════════════════════════════
+     AD — TOP (728×90)
+══════════════════════════════════════════ -->
+<div class="ad-slot">
+  <div class="ad-inner">
+    <!-- Adsterra 728×90 — replace key below -->
+    <span>Advertisement</span>
+    <script>
+      atOptions = { 'key':'YOUR_728x90_KEY', 'format':'iframe', 'height':90, 'width':728, 'params':{} };
+    </script>
+    <script src="//www.topcreativeformat.com/YOUR_728x90_KEY/invoke.js"></script>
   </div>
 </div>
 
-<div class="how-to">
-  <h3>📖 Kaise Use Karein</h3>
-  <div class="steps">
-    <div class="step">
+
+<!-- ══════════════════════════════════════════
+     FEATURES
+══════════════════════════════════════════ -->
+<section class="section" id="features">
+  <div class="sec-eyebrow">Features</div>
+  <h2 class="sec-title">क्यों है InstafbDown सबसे अच्छा?</h2>
+  <p class="sec-sub">India में सबसे ज्यादा use होने वाला Instagram Downloader — तेज़, आसान, मुफ्त।</p>
+
+  <div class="grid-3">
+    <div class="feat-card">
+      <div class="feat-icon">🎬</div>
+      <h3>Reels HD Download</h3>
+      <p>Instagram Reels को Full HD quality में download करें — बिना किसी watermark के।</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📸</div>
+      <h3>Photos &amp; Carousel</h3>
+      <p>Single photo हो या 10 photos का Carousel — सभी original quality में save होंगी।</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📖</div>
+      <h3>Stories Download</h3>
+      <p>किसी की भी public Story save करें — उन्हें कोई notification नहीं जाएगी।</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔓</div>
+      <h3>No Login Needed</h3>
+      <p>Instagram ID या Password देने की कोई जरूरत नहीं। बस link लाओ, download करो।</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⚡</div>
+      <h3>Super Fast Speed</h3>
+      <p>हमारा server 2–4 seconds में download link तैयार करता है — कोई wait नहीं।</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📱</div>
+      <h3>सभी Devices पर</h3>
+      <p>Android, iPhone, PC — हर जगह काम करता है। कोई App install नहीं करनी।</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     AD — SQUARE (300×250)
+══════════════════════════════════════════ -->
+<div class="ad-slot" style="max-width:360px;">
+  <div class="ad-inner tall">
+    <!-- Adsterra 300×250 — replace key below -->
+    <span>Advertisement</span>
+    <script>
+      atOptions = { 'key':'YOUR_300x250_KEY', 'format':'iframe', 'height':250, 'width':300, 'params':{} };
+    </script>
+    <script src="//www.topcreativeformat.com/YOUR_300x250_KEY/invoke.js"></script>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     HOW TO USE
+══════════════════════════════════════════ -->
+<section class="section" id="how-to">
+  <div class="sec-eyebrow">Step by Step Guide</div>
+  <h2 class="sec-title">कैसे Use करें? (सिर्फ 3 Steps)</h2>
+  <p class="sec-sub">बिल्कुल आसान है — पहली बार भी कोई problem नहीं होगी।</p>
+
+  <div class="steps-grid">
+    <div class="step-card">
       <div class="step-num">1</div>
-      <div class="step-text"><strong>Instagram/Facebook</strong> pe jao, video open karo, Share button dabaao aur <strong>"Link Copy Karo"</strong> select karo</div>
+      <h3>Instagram Link Copy करो</h3>
+      <p>
+        जिस Reel, Photo या Story को download करना है उसे Instagram पर open करो।<br>
+        फिर <strong style="color:var(--text);">Share ➜ Copy Link</strong> tap करो।
+      </p>
     </div>
-    <div class="step">
+    <div class="step-card">
       <div class="step-num">2</div>
-      <div class="step-text">Upar wale box mein <strong>link paste karo</strong> aur platform select karo (Instagram ya Facebook)</div>
+      <h3>यहाँ Paste करो</h3>
+      <p>
+        नीचे दिए input box में वो link paste करो। फिर <strong style="color:var(--text);">Download</strong> button दबाओ।
+      </p>
     </div>
-    <div class="step">
+    <div class="step-card">
       <div class="step-num">3</div>
-      <div class="step-text"><strong>"Download Link Lao"</strong> button dabaao — link aa jayega, usse download karo</div>
+      <h3>Download करो और Save करो</h3>
+      <p>
+        Video या Photo का preview आएगा। Download button press करो — file automatically save हो जाएगी।
+      </p>
     </div>
+  </div>
+
+  <div class="tip-box">
+    💡 <strong>ध्यान रखो:</strong> Private account की posts download नहीं होतीं — केवल Public posts ही काम करती हैं।
+    Android पर file <em>Downloads</em> folder में जाती है। iPhone पर <em>Files App</em> में मिलेगी।
+  </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════════════════════════════════════
+     COMPARISON
+══════════════════════════════════════════ -->
+<section class="section" id="compare">
+  <div class="sec-eyebrow">Comparison</div>
+  <h2 class="sec-title">InstafbDown vs Indown.io</h2>
+  <p class="sec-sub">दोनों को compare करो और खुद decide करो कि कौन बेहतर है।</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>🏆 InstafbDown</th>
+          <th>Indown.io</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="us"><td>Download Speed</td><td><span class="yes">✔</span> बहुत तेज़ (2–4 sec)</td><td><span class="maybe">~</span> Average</td></tr>
+        <tr><td>Hindi Interface</td><td><span class="yes">✔</span> पूरी Hindi Support</td><td><span class="no">✘</span> नहीं</td></tr>
+        <tr><td>Reels Download</td><td><span class="yes">✔</span> HD Quality</td><td><span class="yes">✔</span> Yes</td></tr>
+        <tr><td>Stories Download</td><td><span class="yes">✔</span> Yes</td><td><span class="no">✘</span> Limited</td></tr>
+        <tr><td>No Watermark</td><td><span class="yes">✔</span> 100% Clean</td><td><span class="no">✘</span> Watermark लगता है</td></tr>
+        <tr><td>Login Required?</td><td><span class="yes">✔</span> नहीं चाहिए</td><td><span class="maybe">~</span> कभी-कभी</td></tr>
+        <tr><td>Mobile Friendly</td><td><span class="yes">✔</span> Fully Responsive</td><td><span class="maybe">~</span> ठीक-ठाक</td></tr>
+        <tr><td>Ads का झंझट</td><td><span class="yes">✔</span> Minimal Ads</td><td><span class="no">✘</span> बहुत ज्यादा Ads</td></tr>
+        <tr><td>Price</td><td><span class="yes">✔</span> 100% Free</td><td><span class="yes">✔</span> Free</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     FAQ
+══════════════════════════════════════════ -->
+<section class="section" id="faq">
+  <div class="sec-eyebrow">FAQ</div>
+  <h2 class="sec-title">अक्सर पूछे जाने वाले सवाल</h2>
+  <p class="sec-sub">आपके हर सवाल का सीधा और सरल जवाब।</p>
+
+  <div class="faq-list">
+
+    <details open>
+      <summary>क्या InstafbDown बिल्कुल Free है? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        हाँ, InstafbDown 100% मुफ्त है। कोई subscription नहीं, कोई hidden charge नहीं, कोई premium plan नहीं। बस link paste करो और download करो — बिल्कुल free।
+      </div>
+    </details>
+
+    <details>
+      <summary>क्या Instagram Reels download करना legal है? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        Personal use के लिए content download करना generally okay माना जाता है। लेकिन बिना permission के किसी का content re-upload करना या commercially use करना copyright violation हो सकता है। हमेशा original creator को credit दें।
+      </div>
+    </details>
+
+    <details>
+      <summary>Private Account की Posts download होती हैं? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        नहीं। InstafbDown केवल Public accounts की posts, reels, photos और stories download कर सकता है। Private account की content technically access करना possible नहीं है।
+      </div>
+    </details>
+
+    <details>
+      <summary>Instagram Stories कैसे download करें? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        Instagram app में story open करो। ऊपर तीन dots (⋯) tap करो और "Copy Link" select करो। फिर वो link नीचे input box में paste करो और Download button दबाओ।
+      </div>
+    </details>
+
+    <details>
+      <summary>Video download नहीं हो रही / Error आ रहा है — क्यों? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        इसके कुछ कारण हो सकते हैं: link गलत paste हुई हो, account private हो, या Instagram ने temporarily block किया हो। Page refresh करके दोबारा try करें। अगर problem रहे तो 2–3 minutes बाद try करें।
+      </div>
+    </details>
+
+    <details>
+      <summary>Downloaded video phone में कहाँ save होती है? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        Android पर video <strong>Downloads</strong> folder में जाती है। iPhone पर <strong>Files App</strong> के Downloads section में मिलेगी। वहाँ से Photos में move कर सकते हो।
+      </div>
+    </details>
+
+    <details>
+      <summary>Carousel (Multiple Photos) download हो सकती हैं? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        हाँ! Carousel post की सभी images के लिए अलग-अलग download buttons दिखेंगे। एक-एक करके सभी photos download कर सकते हो।
+      </div>
+    </details>
+
+    <details>
+      <summary>क्या यह tool safe है? मेरा data secure रहेगा? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        बिल्कुल। हम आपकी कोई personal information store नहीं करते। Download process server-side होती है और कोई भी user data save नहीं होता। आपकी privacy हमारी priority है।
+      </div>
+    </details>
+
+    <details>
+      <summary>PC / Laptop पर भी काम करता है? <span class="faq-ic">▾</span></summary>
+      <div class="faq-ans">
+        हाँ! InstafbDown किसी भी browser पर काम करता है — Chrome, Firefox, Safari। Mobile और Desktop दोनों पर perfectly। कोई software install नहीं करना।
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AD — BOTTOM -->
+<div class="ad-slot">
+  <div class="ad-inner">
+    <span>Advertisement</span>
+    <script>
+      atOptions = { 'key':'YOUR_BOTTOM_KEY', 'format':'iframe', 'height':90, 'width':728, 'params':{} };
+    </script>
+    <script src="//www.topcreativeformat.com/YOUR_BOTTOM_KEY/invoke.js"></script>
   </div>
 </div>
 
-<footer>© 2026 VidGrab · Personal use only · Respect content creator rights</footer>
 
+<!-- ══════════════════════════════════════════
+     SEO CONTENT
+══════════════════════════════════════════ -->
+<section class="section">
+  <div class="sec-eyebrow">जानकारी</div>
+  <h2 class="sec-title">Instagram Download — पूरी Guide</h2>
+  <p class="sec-sub">Google के लिए helpful content — आपके हर सवाल का जवाब।</p>
+
+  <div class="seo-block">
+
+    <h2>Instagram Reels Download कैसे करें? (2025 Guide)</h2>
+    <p>
+      आज Instagram Reels हर जगह viral हो रही हैं। लोग चाहते हैं कि अपनी पसंदीदा Reels को offline save कर सकें
+      ताकि बाद में बिना internet के देख सकें या WhatsApp पर share कर सकें।
+      <strong>InstafbDown</strong> एक free online tool है जो आपको किसी भी public Instagram Reel,
+      Photo, Story को HD quality में download करने देता है — बिना कोई app install किए।
+    </p>
+
+    <h2>लोग Instagram Video Download क्यों करना चाहते हैं?</h2>
+    <ul>
+      <li>Reels को offline देखना जब internet slow हो या न हो</li>
+      <li>Funny या educational content को दोस्तों के साथ WhatsApp पर share करना</li>
+      <li>Favorite creators के videos को archive करना</li>
+      <li>WhatsApp या Instagram Status लगाने के लिए video save करना</li>
+      <li>Video editing के लिए original file रखना</li>
+    </ul>
+
+    <h2>InstafbDown क्यों है Indown.io से बेहतर?</h2>
+    <p>
+      Market में बहुत से Instagram downloaders हैं — Indown.io, SaveInsta, SnapInsta — लेकिन InstafbDown
+      इन सब से बेहतर है क्योंकि यह पूरी Hindi language support के साथ आता है, बिना watermark के download देता है,
+      और इसका server बहुत fast है। Mobile पर भी perfectly काम करता है।
+    </p>
+
+    <h2>Android पर Instagram Video Download कैसे करें?</h2>
+    <p>
+      Instagram app open करें ➜ जिस post को download करना है उस पर जाएं ➜ तीन dots (⋮) tap करें
+      ➜ "Copy Link" select करें ➜ InstafbDown पर paste करें ➜ Download button press करें।
+      File automatically Downloads folder में save होगी।
+    </p>
+
+    <h2>iPhone पर Instagram Reels Download कैसे करें?</h2>
+    <p>
+      Instagram Reel open करें ➜ Share icon tap करें ➜ "Copy Link" tap करें ➜
+      Safari में instafbdown.in open करें ➜ Link paste करें ➜ Download button press करें।
+      File "Files App" में मिलेगी जिसे Photos में move किया जा सकता है।
+    </p>
+
+    <h2>Instagram Stories Download — क्या Possible है?</h2>
+    <p>
+      हाँ! InstafbDown से आप किसी भी public account की Instagram Stories download कर सकते हैं।
+      Story का link Instagram app से copy करें और यहाँ paste करें।
+      याद रखें — Story 24 घंटे बाद expire होती है, इसलिए जल्दी download करें।
+    </p>
+
+    <h2>क्या Instagram Downloader Tools Safe होते हैं?</h2>
+    <p>
+      InstafbDown पर आपको अपनी Instagram ID या Password देने की कोई जरूरत नहीं है।
+      हम कोई personal data collect नहीं करते। यह tool HTTPS encryption use करता है
+      जिससे आपका connection protected रहता है।
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-links">
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Use</a>
+    <a href="/contact">Contact</a>
+    <a href="/dmca">DMCA</a>
+    <a href="/sitemap.xml">Sitemap</a>
+  </div>
+  <p>© 2025 <strong>InstafbDown.in</strong> — Instagram Downloader | Made with ❤️ in India</p>
+  <p style="margin-top:6px; color:#555; font-size:.8rem;">
+    Disclaimer: यह tool केवल personal use के लिए है। InstafbDown, Instagram / Meta का कोई official product नहीं है।
+  </p>
+</footer>
+
+
+<!-- ══════════════════════════════════════════
+     STICKY BOTTOM INPUT BAR
+══════════════════════════════════════════ -->
+<div class="input-bar" id="inputBar">
+  <div class="input-bar-inner">
+    <div class="input-wrap">
+      <span class="input-icon">📋</span>
+      <input
+        type="url"
+        id="urlInput"
+        placeholder="Instagram link यहाँ paste करें…"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="url"
+      />
+      <button class="clear-btn" id="clearBtn" onclick="clearInput()" aria-label="Clear">✕</button>
+    </div>
+    <button class="dl-main-btn" id="dlBtn" onclick="doDownload()">
+      ⬇ Download
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     JS
+══════════════════════════════════════════ -->
 <script>
-  // ─── CONFIG ───────────────────────────────────────────────
-  const BACKEND_URL = 'https://video-backend-rmc9.onrender.com';
-  // ──────────────────────────────────────────────────────────
+const BACKEND = "https://video-backend-rmc9.onrender.com";
 
-  let currentTab = 'instagram';
+const urlInput  = document.getElementById("urlInput");
+const clearBtn  = document.getElementById("clearBtn");
+const dlBtn     = document.getElementById("dlBtn");
+const resultDiv = document.getElementById("result");
 
-  function setTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    const inp = document.getElementById('urlInput');
-    inp.placeholder = tab === 'instagram'
-      ? 'https://www.instagram.com/reel/...'
-      : 'https://www.facebook.com/reel/...';
-    clearResult();
+/* Show/hide clear button */
+urlInput.addEventListener("input", () => {
+  clearBtn.classList.toggle("visible", urlInput.value.length > 0);
+});
+
+/* Enter key */
+urlInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") doDownload();
+});
+
+/* Paste listener — auto-download on paste */
+urlInput.addEventListener("paste", () => {
+  setTimeout(() => {
+    if (urlInput.value.includes("instagram.com")) doDownload();
+  }, 100);
+});
+
+function clearInput() {
+  urlInput.value = "";
+  clearBtn.classList.remove("visible");
+  resultDiv.innerHTML = "";
+  urlInput.focus();
+}
+
+/* Scroll result into view smoothly */
+function scrollToResult() {
+  setTimeout(() => {
+    resultDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, 100);
+}
+
+async function doDownload() {
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    showError("⚠️ कोई link paste नहीं की। Instagram post का link यहाँ paste करें।");
+    urlInput.focus();
+    return;
   }
 
-  function onInput() {
-    const v = document.getElementById('urlInput').value;
-    document.getElementById('clearBtn').classList.toggle('visible', v.length > 0);
-    clearResult();
+  if (!url.includes("instagram.com")) {
+    showError("❌ यह valid Instagram link नहीं है। Instagram post/reel का link paste करें।");
+    return;
   }
 
-  function clearInput() {
-    document.getElementById('urlInput').value = '';
-    document.getElementById('clearBtn').classList.remove('visible');
-    clearResult();
-  }
+  dlBtn.disabled = true;
+  dlBtn.textContent = "…";
+  showLoading();
+  scrollToResult();
 
-  function clearResult() {
-    document.getElementById('result').classList.remove('visible');
-    document.getElementById('status').className = 'status';
-    document.getElementById('status').textContent = '';
-  }
-
-  function setStatus(msg, type) {
-    const s = document.getElementById('status');
-    s.className = 'status ' + type;
-    s.textContent = msg;
-  }
-
-  function setLoading(on) {
-    const btn = document.getElementById('fetchBtn');
-    btn.disabled = on;
-    btn.classList.toggle('loading', on);
-  }
-
-  async function fetchVideo() {
-    const url = document.getElementById('urlInput').value.trim();
-    clearResult();
-    if (!url) { setStatus('⚠️ Pehle URL paste karo!', 'error'); return; }
-    const isInsta = url.includes('instagram.com');
-    const isFb = url.includes('facebook.com') || url.includes('fb.watch');
-    if (!isInsta && !isFb) {
-      setStatus('❌ Sirf Instagram ya Facebook ka link daalo.', 'error');
-      return;
-    }
-    setLoading(true);
-    setStatus('⏳ Video dhundh raha hoon... (pehli baar 30-50 sec lag sakte hain)', 'info');
-    try {
-      const res = await fetch(`${BACKEND_URL}/download?url=${encodeURIComponent(url)}`);
-      const data = await res.json();
-      setLoading(false);
-      if (data.links && data.links.length > 0) {
-        showResult(data.links);
-        document.getElementById('status').className = 'status';
-      } else {
-        setStatus('❌ Video nahi mili. Public link daalo — private post kaam nahi karega.', 'error');
-      }
-    } catch (e) {
-      setLoading(false);
-      setStatus('❌ Error: ' + (e.message || 'Server se connect nahi hua. Dobara try karo.'), 'error');
-    }
-  }
-
-  // ── Show real results ───────────────────────────────────
-  function showResult(links) {
-    const container = document.getElementById('downloadOptions');
-    container.innerHTML = '';
-
-    links.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'dl-option';
-      div.innerHTML = `
-        <div class="dl-info">
-          <div class="dl-quality">${item.ext === 'jpg' ? '🖼️' : '🎬'} ${item.quality}</div>
-          <div class="dl-size">${item.ext.toUpperCase()} file</div>
-        </div>
-        <a class="dl-btn" href="${item.url}" target="_blank" download>
-          ⬇ Download
-        </a>
-      `;
-      container.appendChild(div);
+  try {
+    const res = await fetch(`${BACKEND}/download`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url })
     });
 
-    document.getElementById('result').classList.add('visible');
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+    const data = await res.json();
+
+    if (data.error) { showError("❌ " + data.error); return; }
+
+    /* Build download buttons */
+    let btns = "";
+
+    if (data.videos && data.videos.length > 0) {
+      data.videos.forEach((v, i) => {
+        btns += `<a class="dl-btn" href="${v.url || v}" download target="_blank">
+          ⬇ Video Download${data.videos.length > 1 ? " " + (i+1) : ""}
+        </a>`;
+      });
+    }
+
+    if (data.images && data.images.length > 0) {
+      data.images.forEach((img, i) => {
+        btns += `<a class="dl-btn" href="${img}" download target="_blank">
+          🖼 Photo Download${data.images.length > 1 ? " " + (i+1) : ""}
+        </a>`;
+      });
+    }
+
+    if (!btns) { showError("⚠️ कोई downloadable content नहीं मिला। Link check करें।"); return; }
+
+    const thumb = data.thumbnail || (data.images && data.images[0]) || "";
+
+    resultDiv.innerHTML = `
+      <div class="result-card">
+        ${thumb ? `<img src="${thumb}" alt="preview" onerror="this.style.display='none'">` : ""}
+        <div class="result-info">
+          <div class="result-label">✅ Content मिल गई!</div>
+          ${btns}
+        </div>
+      </div>`;
+
+    scrollToResult();
+
+  } catch (err) {
+    showError(`❌ Server से connect नहीं हो पाया। थोड़ी देर बाद try करें।<br><small style="opacity:.6">${err.message}</small>`);
+  } finally {
+    dlBtn.disabled = false;
+    dlBtn.textContent = "⬇ Download";
   }
+}
 
+function showLoading() {
+  resultDiv.innerHTML = `
+    <div class="status-box status-loading">
+      <div class="spinner"></div>
+      Download link तैयार हो रही है…
+    </div>`;
+}
 
+function showError(msg) {
+  resultDiv.innerHTML = `<div class="status-box status-error">${msg}</div>`;
+  scrollToResult();
+}
 </script>
+
 </body>
 </html>
